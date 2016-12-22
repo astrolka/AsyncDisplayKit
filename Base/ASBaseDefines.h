@@ -34,6 +34,8 @@
 # define ASDISPLAYNODE_GNUC(major, minor) 0
 #endif
 
+#define IG_LIST_KIT __has_include(<IGListKit/IGListKit.h>)
+
 #ifndef ASDISPLAYNODE_INLINE
 # if defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 #  define ASDISPLAYNODE_INLINE static inline

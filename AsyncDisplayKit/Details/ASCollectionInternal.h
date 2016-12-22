@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class ASCollectionNode;
 @class ASDataController;
 @class ASRangeController;
+@class IGListAdapter;
 
 @interface ASCollectionView ()
 - (instancetype)_initWithFrame:(CGRect)frame collectionViewLayout:(UICollectionViewLayout *)layout layoutFacilitator:(nullable id<ASCollectionViewLayoutFacilitatorProtocol>)layoutFacilitator eventLog:(nullable ASEventLog *)eventLog;
@@ -25,6 +26,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak, readwrite) ASCollectionNode *collectionNode;
 @property (nonatomic, strong, readonly) ASDataController *dataController;
 @property (nonatomic, strong, readonly) ASRangeController *rangeController;
+
+/**
+ * The IGListAdapter to use with this collection view.
+ * This should be set publicly on the collection node, not on the view.
+ */
+@property (nonatomic, weak) IGListAdapter *listAdapter;
 
 /**
  * Attempt to get the view-layer index path for the item with the given index path.

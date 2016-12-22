@@ -13,6 +13,7 @@
 #import "ASCollectionInternal.h"
 #import "ASCollectionViewLayoutFacilitatorProtocol.h"
 #import "ASCollectionNode.h"
+#import "ASCollectionNode+Beta.h"
 #import "ASDisplayNode+Subclasses.h"
 #import "ASDisplayNode+FrameworkPrivate.h"
 #import "ASEnvironmentInternal.h"
@@ -28,6 +29,7 @@
 @interface _ASCollectionPendingState : NSObject
 @property (weak, nonatomic) id <ASCollectionDelegate>   delegate;
 @property (weak, nonatomic) id <ASCollectionDataSource> dataSource;
+@property (nonatomic, weak) id listAdapter;
 @property (nonatomic, assign) ASLayoutRangeMode rangeMode;
 @property (nonatomic, assign) BOOL allowsSelection; // default is YES
 @property (nonatomic, assign) BOOL allowsMultipleSelection; // default is NO
@@ -150,6 +152,7 @@
     view.asyncDataSource         = pendingState.dataSource;
     view.allowsSelection         = pendingState.allowsSelection;
     view.allowsMultipleSelection = pendingState.allowsMultipleSelection;
+    view.listAdapter             = pendingState.listAdapter;
 
     if (pendingState.rangeMode != ASLayoutRangeModeCount) {
       [view.rangeController updateCurrentRangeWithMode:pendingState.rangeMode];
@@ -328,6 +331,24 @@
 - (void)setTuningParameters:(ASRangeTuningParameters)tuningParameters forRangeMode:(ASLayoutRangeMode)rangeMode rangeType:(ASLayoutRangeType)rangeType
 {
   return [self.rangeController setTuningParameters:tuningParameters forRangeMode:rangeMode rangeType:rangeType];
+}
+
+- (void)setListAdapter:(id)listAdapter
+{
+  if (self.nodeLoaded) {
+    self.view.listAdapter = listAdapter;
+  } else {
+    self.pendingState.listAdapter = listAdapter;
+  }
+}
+
+- (id)listAdapter
+{
+  if (self.nodeLoaded) {
+    return self.view.listAdapter;
+  } else {
+    return self.pendingState.listAdapter;
+  }
 }
 
 #pragma mark - Selection
