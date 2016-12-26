@@ -17,6 +17,7 @@
 #import "ASIndexedNodeContext.h"
 #import "ASSection.h"
 #import "ASSectionContext.h"
+#import "NSIndexSet+ASHelpers.h"
 
 //#define LOG(...) NSLog(__VA_ARGS__)
 #define LOG(...)
@@ -59,7 +60,7 @@
   [_sections removeAllObjects];
   [self _populatePendingSectionsFromDataSource:sections];
   
-  for (NSString *kind in [self supplementaryKinds]) {
+  for (NSString *kind in [self supplementaryKindsInSections:sections]) {
     LOG(@"Populating elements of kind: %@", kind);
     NSMutableArray<ASIndexedNodeContext *> *contexts = [NSMutableArray array];
     [self _populateSupplementaryNodesOfKind:kind withSections:sections mutableContexts:contexts];
@@ -101,7 +102,7 @@
   ASDisplayNodeAssertMainThread();
   [self _populatePendingSectionsFromDataSource:sections];
   
-  for (NSString *kind in [self supplementaryKinds]) {
+  for (NSString *kind in [self supplementaryKindsInSections:sections]) {
     LOG(@"Populating elements of kind: %@, for sections: %@", kind, sections);
     NSMutableArray<ASIndexedNodeContext *> *contexts = [NSMutableArray array];
     [self _populateSupplementaryNodesOfKind:kind withSections:sections mutableContexts:contexts];
@@ -130,8 +131,8 @@
 - (void)willDeleteSections:(NSIndexSet *)sections
 {
   [_sections removeObjectsAtIndexes:sections];
-  
-  for (NSString *kind in [self supplementaryKinds]) {
+
+  for (NSString *kind in [self supplementaryKindsInSections:sections]) {
     NSArray *indexPaths = ASIndexPathsForMultidimensionalArrayAtIndexSet([self editingNodesOfKind:kind], sections);
     
     [self deleteNodesOfKind:kind atIndexPaths:indexPaths completion:nil];
@@ -146,7 +147,7 @@
   [_sections insertObject:movedSection atIndex:newSection];
   
   NSIndexSet *sectionAsIndexSet = [NSIndexSet indexSetWithIndex:section];
-  for (NSString *kind in [self supplementaryKinds]) {
+  for (NSString *kind in [self supplementaryKindsInSections:sectionAsIndexSet]) {
     NSMutableArray *editingNodes = [self editingNodesOfKind:kind];
     NSArray *indexPaths = ASIndexPathsForMultidimensionalArrayAtIndexSet(editingNodes, sectionAsIndexSet);
     NSArray *nodes = ASFindElementsInMultidimensionalArrayAtIndexPaths(editingNodes, indexPaths);
@@ -166,7 +167,8 @@
 - (void)prepareForInsertRowsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths
 {
   ASDisplayNodeAssertMainThread();
-  for (NSString *kind in [self supplementaryKinds]) {
+  NSIndexSet *sections = [NSIndexSet as_sectionsFromIndexPaths:indexPaths];
+  for (NSString *kind in [self supplementaryKindsInSections:sections]) {
     LOG(@"Populating elements of kind: %@, for index paths: %@", kind, indexPaths);
     NSMutableArray<ASIndexedNodeContext *> *contexts = [NSMutableArray array];
     [self _populateSupplementaryNodesOfKind:kind atIndexPaths:indexPaths mutableContexts:contexts];
@@ -188,7 +190,8 @@
 - (void)prepareForDeleteRowsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths
 {
   ASDisplayNodeAssertMainThread();
-  for (NSString *kind in [self supplementaryKinds]) {
+  NSIndexSet *sections = [NSIndexSet as_sectionsFromIndexPaths:indexPaths];
+  for (NSString *kind in [self supplementaryKindsInSections:sections]) {
     NSMutableArray<ASIndexedNodeContext *> *contexts = [NSMutableArray array];
     [self _populateSupplementaryNodesOfKind:kind atIndexPaths:indexPaths mutableContexts:contexts];
     _pendingNodeContexts[kind] = contexts;
@@ -197,7 +200,8 @@
 
 - (void)willDeleteRowsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths
 {
-  for (NSString *kind in [self supplementaryKinds]) {
+  NSIndexSet *sections = [NSIndexSet as_sectionsFromIndexPaths:indexPaths];
+  for (NSString *kind in [self supplementaryKindsInSections:sections]) {
     NSArray<NSIndexPath *> *deletedIndexPaths = ASIndexPathsInMultidimensionalArrayIntersectingIndexPaths([self editingNodesOfKind:kind], indexPaths);
 
     [self deleteNodesOfKind:kind atIndexPaths:deletedIndexPaths completion:nil];
@@ -323,9 +327,9 @@
 
 #pragma mark - Private Helpers
 
-- (NSArray *)supplementaryKinds
+- (NSArray *)supplementaryKindsInSections:(NSIndexSet *)sections
 {
-  return [self.collectionDataSource supplementaryNodeKindsInDataController:self];
+  return [self.collectionDataSource supplementaryNodeKindsInDataController:self sections:sections];
 }
 
 - (id<ASCollectionDataControllerSource>)collectionDataSource
