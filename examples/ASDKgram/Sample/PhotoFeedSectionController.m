@@ -46,6 +46,12 @@
     } completion:^(BOOL finished) {
       [context completeBatchFetching:YES];
     }];
+
+    // WORKAROUND for https://github.com/Instagram/IGListKit/issues/378
+    if (oldCount == 0) {
+      [(IGListAdapter *)self.collectionContext performUpdatesAnimated:NO completion:nil];
+    }
+    
   } numResultsToReturn:20];
 }
 
