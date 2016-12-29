@@ -263,12 +263,6 @@ static NSString * const kSupplementaryReuseIdentifier = @"_ASCollectionSupplemen
 {
   __weak id<ASCollectionDelegate> _asyncDelegate;
   __weak id<ASCollectionDataSource> _asyncDataSource;
-  
-#if IG_LIST_KIT
-  __weak IGListAdapter *_listAdapter;
-#else
-  __weak id _listAdapter;
-#endif
 }
 @synthesize listAdapter = _listAdapter;
 
@@ -1343,6 +1337,21 @@ static NSString * const kSupplementaryReuseIdentifier = @"_ASCollectionSupplemen
 
 - (BOOL)canBatchFetch
 {
+#if IG_LIST_KIT
+  if (_listAdapter) {
+    NSInteger sectionCount = self.dataController.numberOfSections;
+    if (sectionCount > 0) {
+      id<ASIGListSectionType> ctrl = [_listAdapter as_sectionControllerAtSection:sectionCount - 1];
+      // TODO: Cache these selectors. Could use a map table or associated objects. Probably map table to avoid runtime.
+      if ([ctrl respondsToSelector:@selector(shouldBatchFetch)]) {
+        return [ctrl shouldBatchFetch];
+      } else {
+        return [ctrl respondsToSelector:@selector(beginBatchFetchWithContext:)];
+      }
+    }
+  }
+#endif
+
   // if the delegate does not respond to this method, there is no point in starting to fetch
   BOOL canFetch = _asyncDelegateFlags.collectionNodeWillBeginBatchFetch || _asyncDelegateFlags.collectionViewWillBeginBatchFetch;
   if (canFetch && _asyncDelegateFlags.shouldBatchFetchForCollectionNode) {
@@ -1392,6 +1401,17 @@ static NSString * const kSupplementaryReuseIdentifier = @"_ASCollectionSupplemen
 - (void)_beginBatchFetching
 {
   [_batchContext beginBatchFetching];
+#if IG_LIST_KIT
+  if (_listAdapter) {
+    NSInteger sectionCount = self.dataController.numberOfSections;
+    if (sectionCount > 0) {
+      id<ASIGListSectionType> ctrl = [_listAdapter as_sectionControllerAtSection:sectionCount - 1];
+      if ([ctrl respondsToSelector:@selector(beginBatchFetchWithContext:)]) {
+        [ctrl beginBatchFetchWithContext:_batchContext];
+      }
+    }
+  } else
+#endif
   if (_asyncDelegateFlags.collectionNodeWillBeginBatchFetch) {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
       GET_COLLECTIONNODE_OR_RETURN(collectionNode, (void)0);

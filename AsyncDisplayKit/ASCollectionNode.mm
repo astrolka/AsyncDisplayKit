@@ -222,6 +222,11 @@
 
 - (void)setDelegate:(id <ASCollectionDelegate>)delegate
 {
+  if (self.listAdapter && delegate != nil) {
+    ASDisplayNodeFailAssert(@"ASCollectionNode.delegate cannot be set when used with a list adapter.");
+    return;
+  }
+
   if ([self pendingState]) {
     _pendingState.delegate = delegate;
   } else {
@@ -249,6 +254,11 @@
 
 - (void)setDataSource:(id <ASCollectionDataSource>)dataSource
 {
+  if (self.listAdapter && dataSource != nil) {
+    ASDisplayNodeFailAssert(@"ASCollectionNode.dataSource cannot be set when used with a list adapter.");
+    return;
+  }
+
   if ([self pendingState]) {
     _pendingState.dataSource = dataSource;
   } else {
@@ -335,6 +345,16 @@
 
 - (void)setListAdapter:(id)listAdapter
 {
+  if (self.delegate && listAdapter != nil) {
+    ASDisplayNodeFailAssert(@"ASCollectionNode.delegate cannot be set when used with a list adapter.");
+    return;
+  }
+
+  if (self.dataSource && listAdapter != nil) {
+    ASDisplayNodeFailAssert(@"ASCollectionNode.dataSource cannot be set when used with a list adapter.");
+    return;
+  }
+
   if (self.nodeLoaded) {
     self.view.listAdapter = listAdapter;
   } else {

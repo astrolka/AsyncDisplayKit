@@ -29,6 +29,28 @@ NS_ASSUME_NONNULL_BEGIN
 @optional
 
 /**
+ * Asks the section controller whether it should batch fetch because the user is
+ * near the end of the current data set.
+ *
+ * @discussion Use this method to conditionally fetch batches. Example use cases are: limiting the total number of
+ * objects that can be fetched or no network connection.
+ *
+ * If not implemented, the assumed return value is @c YES.
+ */
+- (BOOL)shouldBatchFetch;
+
+/**
+ * Asks the section controller to begin fetching more content (tail loading) because
+ * the user is near the end of the current data set.
+ *
+ * @param context A context object that must be notified when the batch fetch is completed.
+ *
+ * @discussion You must eventually call -completeBatchFetching: with an argument of YES in order to receive future
+ * notifications to do batch fetches. This method is called on a background queue.
+ */
+- (void)beginBatchFetchWithContext:(ASBatchContext *)context;
+
+/**
  * A method to provide the constrained size used for measuring the item
  * at the given index.
  *

@@ -18,6 +18,7 @@
 //
 
 #import "PhotoModel.h"
+#import <IGListKit/IGListKit.h>
 
 typedef NS_ENUM(NSInteger, PhotoFeedModelType) {
   PhotoFeedModelTypePopular,
@@ -25,7 +26,7 @@ typedef NS_ENUM(NSInteger, PhotoFeedModelType) {
   PhotoFeedModelTypeUserPhotos
 };
 
-@interface PhotoFeedModel : NSObject
+@interface PhotoFeedModel : NSObject <IGListDiffable>
 
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithPhotoFeedModelType:(PhotoFeedModelType)type imageSize:(CGSize)size NS_DESIGNATED_INITIALIZER;

@@ -246,4 +246,16 @@
   });
 }
 
+#pragma mark - IGListDiffable
+
+- (id<NSObject>)diffIdentifier
+{
+  return self;
+}
+
+- (BOOL)isEqualToDiffableObject:(id<IGListDiffable>)object
+{
+  return self == object;
+}
+
 @end
