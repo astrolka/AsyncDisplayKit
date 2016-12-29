@@ -33,6 +33,7 @@
 		B13424EE6D36C2EC5D1030B6 /* libPods-Sample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AD5DDA0A29B0F32AA5CC47BA /* libPods-Sample.a */; };
 		CC00D1571E15912F004E5502 /* PhotoFeedListKitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CC00D1561E15912F004E5502 /* PhotoFeedListKitViewController.m */; };
 		CC5369AC1E15925200FAD348 /* PhotoFeedSectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CC5369AB1E15925200FAD348 /* PhotoFeedSectionController.m */; };
+		CC5532171E15CC1E0011C01F /* ASCollectionSectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CC5532161E15CC1E0011C01F /* ASCollectionSectionController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,6 +88,8 @@
 		CC5369AA1E15925200FAD348 /* PhotoFeedSectionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFeedSectionController.h; sourceTree = "<group>"; };
 		CC5369AB1E15925200FAD348 /* PhotoFeedSectionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoFeedSectionController.m; sourceTree = "<group>"; };
 		CC5532111E159D770011C01F /* RefreshingSectionControllerType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RefreshingSectionControllerType.h; sourceTree = "<group>"; };
+		CC5532151E15CC1E0011C01F /* ASCollectionSectionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASCollectionSectionController.h; sourceTree = "<group>"; };
+		CC5532161E15CC1E0011C01F /* ASCollectionSectionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASCollectionSectionController.m; sourceTree = "<group>"; };
 		D09B5DF0BFB37583DE8F3142 /* Pods-Sample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sample.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sample/Pods-Sample.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -263,6 +266,8 @@
 				CC00D1561E15912F004E5502 /* PhotoFeedListKitViewController.m */,
 				CC5369AA1E15925200FAD348 /* PhotoFeedSectionController.h */,
 				CC5369AB1E15925200FAD348 /* PhotoFeedSectionController.m */,
+				CC5532151E15CC1E0011C01F /* ASCollectionSectionController.h */,
+				CC5532161E15CC1E0011C01F /* ASCollectionSectionController.m */,
 			);
 			name = "ASDK-ListKit";
 			sourceTree = "<group>";
@@ -398,6 +403,7 @@
 				768843831CAA37EF00D8629E /* CommentsNode.m in Sources */,
 				768843961CAA37EF00D8629E /* Utilities.m in Sources */,
 				768843931CAA37EF00D8629E /* UserModel.m in Sources */,
+				CC5532171E15CC1E0011C01F /* ASCollectionSectionController.m in Sources */,
 				768843801CAA37EF00D8629E /* AppDelegate.m in Sources */,
 				768843811CAA37EF00D8629E /* CommentFeedModel.m in Sources */,
 				7688438E1CAA37EF00D8629E /* PhotoFeedNodeController.m in Sources */,
@@ -501,6 +507,7 @@
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Sample/Sample.pch;
 				INFOPLIST_FILE = Sample/Info.plist;
@@ -521,6 +528,7 @@
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Sample/Sample.pch;
 				INFOPLIST_FILE = Sample/Info.plist;

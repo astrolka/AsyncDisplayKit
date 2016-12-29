@@ -9,12 +9,13 @@
 #import <IGListKit/IGListKit.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import "RefreshingSectionControllerType.h"
+#import "ASCollectionSectionController.h"
 
 @class PhotoFeedModel;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PhotoFeedSectionController : IGListSectionController <ASIGListSectionType, RefreshingSectionControllerType>
+@interface PhotoFeedSectionController : ASCollectionSectionController <ASIGListSectionType, RefreshingSectionControllerType>
 
 @property (nonatomic, strong, nullable) PhotoFeedModel *photoFeed;
 

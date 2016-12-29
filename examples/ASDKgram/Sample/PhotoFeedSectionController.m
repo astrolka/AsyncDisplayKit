@@ -11,47 +11,63 @@
 #import "PhotoModel.h"
 #import "PhotoCellNode.h"
 
+@interface PhotoFeedSectionController ()
+@property (nonatomic, strong) NSString *paginatingSpinner;
+@end
+
 @implementation PhotoFeedSectionController
+
+- (instancetype)init
+{
+  if (self = [super init]) {
+    _paginatingSpinner = @"Paginating Spinner";
+  }
+  return self;
+}
 
 - (void)didUpdateToObject:(id)object
 {
   _photoFeed = object;
-}
-
-- (NSInteger)numberOfItems
-{
-  return [_photoFeed numberOfItemsInFeed];
+  [self setItems:_photoFeed.photos animated:NO completion:nil];
 }
 
 - (ASCellNodeBlock)nodeBlockForItemAtIndex:(NSInteger)index
 {
-  PhotoModel *photoModel = [_photoFeed objectAtIndex:index];
+  id object = self.items[index];
   // this will be executed on a background thread - important to make sure it's thread safe
-  ASCellNode *(^ASCellNodeBlock)() = ^ASCellNode *() {
-    PhotoCellNode *cellNode = [[PhotoCellNode alloc] initWithPhotoObject:photoModel];
-    return cellNode;
-  };
+  ASCellNode *(^nodeBlock)() = nil;
+  if (object == _paginatingSpinner) {
+    nodeBlock = ^{
+      ASCellNode *spinnerNode = [[ASCellNode alloc] initWithViewBlock:^{
+        UIActivityIndicatorView *v = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [v startAnimating];
+        return v;
+      }];
+      spinnerNode.style.height = ASDimensionMake(100);
+      return spinnerNode;
+    };
+  } else if ([object isKindOfClass:[PhotoModel class]]) {
+    PhotoModel *photoModel = object;
+    nodeBlock = ^{
+      PhotoCellNode *cellNode = [[PhotoCellNode alloc] initWithPhotoObject:photoModel];
+      return cellNode;
+    };
+  }
 
-  return ASCellNodeBlock;
+  return nodeBlock;
 }
 
 - (void)beginBatchFetchWithContext:(ASBatchContext *)context
 {
-  NSInteger oldCount = self.photoFeed.numberOfItemsInFeed;
-  [_photoFeed requestPageWithCompletionBlock:^(NSArray *newPhotos){
+  if (self.items.count > 0) {
+    NSArray *newItems = [self.items arrayByAddingObject:_paginatingSpinner];
+    [self setItems:newItems animated:YES completion:nil];
+  }
 
-    [self.collectionContext performBatchAnimated:YES updates:^{
-      NSRange range = NSMakeRange(oldCount, newPhotos.count);
-      [self.collectionContext insertInSectionController:self atIndexes:[NSIndexSet indexSetWithIndexesInRange:range]];
-    } completion:^(BOOL finished) {
+  [_photoFeed requestPageWithCompletionBlock:^(NSArray *newPhotos){
+    [self setItems:_photoFeed.photos animated:YES completion:^{
       [context completeBatchFetching:YES];
     }];
-
-    // WORKAROUND for https://github.com/Instagram/IGListKit/issues/378
-    if (oldCount == 0) {
-      [(IGListAdapter *)self.collectionContext performUpdatesAnimated:NO completion:nil];
-    }
-    
   } numResultsToReturn:20];
 }
 
@@ -63,10 +79,7 @@
 - (void)refreshContentWithCompletion:(void(^)())completion
 {
   [_photoFeed refreshFeedWithCompletionBlock:^(NSArray *addedItems) {
-    [self.collectionContext reloadSectionController:self];
-    if (completion) {
-      completion();
-    }
+    [self setItems:_photoFeed.photos animated:YES completion:completion];
   } numResultsToReturn:4];
 }
 

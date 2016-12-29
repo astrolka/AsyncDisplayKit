@@ -31,6 +31,8 @@ typedef NS_ENUM(NSInteger, PhotoFeedModelType) {
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithPhotoFeedModelType:(PhotoFeedModelType)type imageSize:(CGSize)size NS_DESIGNATED_INITIALIZER;
 
+@property (nonatomic, readonly) NSArray<PhotoModel *> *photos;
+
 - (NSUInteger)totalNumberOfPhotos;
 - (NSUInteger)numberOfItemsInFeed;
 - (PhotoModel *)objectAtIndex:(NSUInteger)index;
