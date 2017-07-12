@@ -54,7 +54,7 @@ static NSMutableSet *__cellClassesForVisibilityNotifications = nil; // See +init
   if (!(self = [super init]))
     return nil;
 
-  // Use UITableViewCell defaults
+  // Use UITableViewCell defaults if you want
   _selectionStyle = UITableViewCellSelectionStyleDefault;
   self.clipsToBounds = YES;
 
